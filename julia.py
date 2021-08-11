@@ -64,6 +64,8 @@ def julia(c, z):
 
 if __name__ == '__main__':
 
+    cmaps = ["binary", "Blues", "seismic"]
+
     x_interval = (-1.6, 1.6)
     y_interval = (-1., 1.)
     resolution = 1000
@@ -83,11 +85,8 @@ if __name__ == '__main__':
             for arg in prepare_data(x_interval, y_interval, resolution)
         )
         with Pool(12) as p:
-            flat_results = p.starmap(julia, args)
+            img_data = np.array(p.starmap(julia, args)).reshape((y_res, x_res))
 
-        print(f"{strftime('%H:%M:%S')}: Saving julia_{i}.png ...")
-        plt.imsave(
-            f"julia_{i}.png",
-            np.array(flat_results).reshape((y_res, x_res)),
-            cmap="binary"
-        )
+        for j, cmap in enumerate(cmaps, start=1):
+            print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
+            plt.imsave(f"julia_{i}-{j}.png", img_data, cmap=cmap)
