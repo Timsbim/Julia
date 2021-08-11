@@ -75,7 +75,7 @@ def julia(c, z):
 
 if __name__ == '__main__':
 
-    # Image path
+    # Image path (create if it doesn't exist)
     path = Path().cwd() / "Images"
     path.mkdir(exist_ok=True)
 
