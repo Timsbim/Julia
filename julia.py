@@ -1,7 +1,8 @@
-from multiprocessing import Pool
-from array import array
+from itertools import product
 from pathlib import Path
 from time import strftime
+from multiprocessing import Pool
+from array import array
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -74,11 +75,10 @@ def generate_z(x_interval, y_interval, resolution):
 
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
     x_axis = np.linspace(x_left, x_right, x_res, endpoint=True)
-    y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True)
+    y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True) * 1.j
 
-    for y in y_axis:
-        for x in x_axis:
-            yield x + y*1.j
+    for y, x in product(y_axis, x_axis):
+        yield x + y
 
 
 def julia(c, z):
