@@ -82,6 +82,7 @@ if __name__ == '__main__':
 
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
     pil_show(flat_results, x_res, y_res, file="julia_1.png")
+
     plt.imsave(
         f"julia_2.png",
         np.array(flat_results).reshape((y_res, x_res)),
