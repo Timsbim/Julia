@@ -22,6 +22,11 @@ def pil_show(flat, x_res, y_res, file=None):
 
 
 def set_resolutions(x_interval, y_interval, resolution):
+    """Create evenly distributed resolutions:
+     - Use given resolution for the larger section
+     - Adjust given resolution proportionally for shorter section
+     - Minor adjustments: Always use odd resolutions
+    """
     x_left, x_right = x_interval
     y_bottom, y_top = y_interval
 
@@ -43,6 +48,11 @@ def set_resolutions(x_interval, y_interval, resolution):
 
 
 def prepare_data(x_interval, y_interval, resolution):
+    """Prepare base data grid (flattened) for actual calculation:
+     - Rectangle defined by top-left point (x_interval[0], y_interval[1]) and
+       bottom right point (x_interval[1], y_interval[0])
+     - Grid spacing is given through the resolution
+    """
     x_left, x_right = x_interval
     y_bottom, y_top = y_interval
 
@@ -55,6 +65,7 @@ def prepare_data(x_interval, y_interval, resolution):
 
 
 def julia(c, z):
+    """Obvious ... :)"""
     n = 0
     while abs(z) < 2. and n < 300:
         z = z * z + c
@@ -64,13 +75,16 @@ def julia(c, z):
 
 if __name__ == '__main__':
 
+    # Matplotlib color maps
     cmaps = ["binary", "Blues", "seismic"]
 
+    # Relatively good section (not for all) and resolution
     x_interval = (-1.6, 1.6)
     y_interval = (-1., 1.)
     resolution = 1000
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
 
+    # List of interesting c's
     c_list = [
         -0.62772 - 0.42193j,
         -0.74543 + 0.11301j,
@@ -84,9 +98,11 @@ if __name__ == '__main__':
             (c, arg)
             for arg in prepare_data(x_interval, y_interval, resolution)
         )
+        # Calculating image data using a multiprocessing pool
         with Pool(12) as p:
             img_data = np.array(p.starmap(julia, args)).reshape((y_res, x_res))
 
+        # Saving image using several color maps
         for j, cmap in enumerate(cmaps, start=1):
             print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
             plt.imsave(f"julia_{i}-{j}.png", img_data, cmap=cmap)
