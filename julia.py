@@ -75,6 +75,10 @@ def julia(c, z):
 
 if __name__ == '__main__':
 
+    # Image path
+    path = Path().cwd() / "Images"
+    path.mkdir(exist_ok=True)
+
     # Matplotlib color maps
     cmaps = ["binary", "Blues", "seismic"]
 
@@ -105,4 +109,4 @@ if __name__ == '__main__':
         # Saving image using several color maps
         for j, cmap in enumerate(cmaps, start=1):
             print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
-            plt.imsave(f"julia_{i}-{j}.png", img_data, cmap=cmap)
+            plt.imsave(path / f"julia_{i}-{j}.png", img_data, cmap=cmap)
