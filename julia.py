@@ -11,7 +11,7 @@ from PIL import Image
 
 def pil_show(flat_image, x_res, y_res, file=None):
     """Idea from: https://github.com/mynameisfiber/high_performance_python_2e
-     but not used here
+     -- but actually not used here, Matplotlib seems perfectly fine for the job
     """
     scale_factor = float(max(flat_image))
     output = array(
@@ -55,11 +55,10 @@ def prepare_z(x_interval, y_interval, resolution):
     """Prepare z-data grid (flattened) for actual calculation:
      - Rectangle defined by top-left point (x_interval[0], y_interval[1]) and
        bottom right point (x_interval[1], y_interval[0])
-     - Grid spacing is given through the resolution
+     - Grid spacing is given by the resolution
     """
     x_left, x_right = x_interval
     y_bottom, y_top = y_interval
-
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
     x_axis = np.linspace(x_left, x_right, x_res, endpoint=True)
     y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True)
@@ -71,11 +70,10 @@ def generate_z(x_interval, y_interval, resolution):
     """Generate z along a grid:
      - Rectangle defined by top-left point (x_interval[0], y_interval[1]) and
        bottom right point (x_interval[1], y_interval[0])
-     - Grid spacing is given through the resolution
+     - Grid spacing is given by the resolution
     """
     x_left, x_right = x_interval
     y_bottom, y_top = y_interval
-
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
     x_axis = np.linspace(x_left, x_right, x_res, endpoint=True)
     y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True) * 1.j
@@ -85,7 +83,7 @@ def generate_z(x_interval, y_interval, resolution):
 
 
 def julia(c, z):
-    """Obvious ... :)"""
+    """Obvious ... :))"""
     n = 0
     while abs(z) < 2. and n < 300:
         z = z * z + c
@@ -95,11 +93,11 @@ def julia(c, z):
 
 if __name__ == '__main__':
 
-    # Image path (create if it doesn't exist)
+    # Image path (create, if it doesn't exist)
     path = Path().cwd() / "Images"
     path.mkdir(exist_ok=True)
 
-    # Matplotlib color maps
+    # Some Matplotlib color maps
     cmaps = ["binary", "Blues", "seismic"]
 
     # Relatively good section (not for all) and resolution
@@ -108,7 +106,7 @@ if __name__ == '__main__':
     resolution = 1000
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
 
-    # List of interesting c's
+    # List of interesting c constants
     c_list = [
         -0.62772 - 0.42193j,
         -0.74543 + 0.11301j,
@@ -123,7 +121,7 @@ if __name__ == '__main__':
         with Pool(12) as p:
             img_data = np.array(p.starmap(julia, args)).reshape((y_res, x_res))
 
-        # Saving image using several color maps
+        # Saving one image per color map
         for j, cmap in enumerate(cmaps, start=1):
             print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
             plt.imsave(path / f"julia_{i}-{j}.png", img_data, cmap=cmap)
