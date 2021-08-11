@@ -1,7 +1,7 @@
 from multiprocessing import Pool
 from array import array
 from pathlib import Path
-from time import perf_counter
+from time import strftime
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -64,27 +64,30 @@ def julia(c, z):
 
 if __name__ == '__main__':
 
-    start = perf_counter()
-
-    x_interval = (-1.5, 1.5)
-    y_interval = (-.95, .95)
+    x_interval = (-1.6, 1.6)
+    y_interval = (-1., 1.)
     resolution = 1000
-
-    c = -0.62772 - 0.42193j
-    args = (
-        (c, arg) for arg in prepare_data(x_interval, y_interval, resolution)
-    )
-    with Pool(12) as p:
-        flat_results = p.starmap(julia, args)
-
-    end = perf_counter()
-    print(f"Duration of calculations: {end - start:.2f} seconds")
-
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
-    pil_show(flat_results, x_res, y_res, file="julia_1.png")
 
-    plt.imsave(
-        f"julia_2.png",
-        np.array(flat_results).reshape((y_res, x_res)),
-        cmap="binary"
-    )
+    c_list = [
+        -0.62772 - 0.42193j,
+        -0.74543 + 0.11301j,
+        -0.75 + 0.11j,
+        -0.1 + 0.651j,
+        -0.8 + 0.156j
+    ]
+    for i, c in enumerate(c_list, start=1):
+        print(f"{strftime('%H:%M:%S')}: Calculating {i}. set ...")
+        args = (
+            (c, arg)
+            for arg in prepare_data(x_interval, y_interval, resolution)
+        )
+        with Pool(12) as p:
+            flat_results = p.starmap(julia, args)
+
+        print(f"{strftime('%H:%M:%S')}: Saving julia_{i}.png ...")
+        plt.imsave(
+            f"julia_{i}.png",
+            np.array(flat_results).reshape((y_res, x_res)),
+            cmap="binary"
+        )
