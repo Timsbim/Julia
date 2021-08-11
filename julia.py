@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     x_interval = (-1.5, 1.5)
     y_interval = (-.95, .95)
-    resolution = 2000
+    resolution = 1000
 
     c = -0.62772 - 0.42193j
     args = (
