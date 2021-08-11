@@ -9,10 +9,13 @@ from matplotlib import pyplot as plt
 from PIL import Image
 
 
-def pil_show(flat, x_res, y_res, file=None):
-    scale_factor = float(max(flat))
+def pil_show(flat_image, x_res, y_res, file=None):
+    """Idea from: https://github.com/mynameisfiber/high_performance_python_2e
+     but not used here
+    """
+    scale_factor = float(max(flat_image))
     output = array(
-        'B', (int(value / scale_factor * 255) for value in flat)
+        'B', (int(value / scale_factor * 255) for value in flat_image)
     )
     img = Image.new("L", (x_res, y_res))
     img.frombytes(output.tobytes(), "raw", "L", 0, -1)
