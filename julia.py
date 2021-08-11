@@ -47,8 +47,8 @@ def set_resolutions(x_interval, y_interval, resolution):
     return x_res, y_res
 
 
-def prepare_data(x_interval, y_interval, resolution):
-    """Prepare base data grid (flattened) for actual calculation:
+def prepare_z(x_interval, y_interval, resolution):
+    """Prepare z-data grid (flattened) for actual calculation:
      - Rectangle defined by top-left point (x_interval[0], y_interval[1]) and
        bottom right point (x_interval[1], y_interval[0])
      - Grid spacing is given through the resolution
@@ -57,11 +57,28 @@ def prepare_data(x_interval, y_interval, resolution):
     y_bottom, y_top = y_interval
 
     x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
-
     x_axis = np.linspace(x_left, x_right, x_res, endpoint=True)
     y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True)
 
     return sum(np.meshgrid(x_axis, 1.j * y_axis)).flatten()
+
+
+def generate_z(x_interval, y_interval, resolution):
+    """Generate z along a grid:
+     - Rectangle defined by top-left point (x_interval[0], y_interval[1]) and
+       bottom right point (x_interval[1], y_interval[0])
+     - Grid spacing is given through the resolution
+    """
+    x_left, x_right = x_interval
+    y_bottom, y_top = y_interval
+
+    x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
+    x_axis = np.linspace(x_left, x_right, x_res, endpoint=True)
+    y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True)
+
+    for y in y_axis:
+        for x in x_axis:
+            yield x + y*1.j
 
 
 def julia(c, z):
@@ -98,10 +115,7 @@ if __name__ == '__main__':
     ]
     for i, c in enumerate(c_list, start=1):
         print(f"{strftime('%H:%M:%S')}: Calculating {i}. set ...")
-        args = (
-            (c, arg)
-            for arg in prepare_data(x_interval, y_interval, resolution)
-        )
+        args = ((c, z) for z in generate_z(x_interval, y_interval, resolution))
         # Calculating image data using a multiprocessing pool
         with Pool(12) as p:
             img_data = np.array(p.starmap(julia, args)).reshape((y_res, x_res))
