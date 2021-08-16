@@ -66,6 +66,7 @@ zs = prepare_z(x_interval, y_interval, resolution)
 max_iter = 500
 
 # List of interesting c constants
+"""
 c_list = [
     -0.62772 - 0.42193j,
     -0.74543 + 0.11301j,
@@ -73,15 +74,20 @@ c_list = [
     -0.1 + 0.651j,
     -0.8 + 0.156j
 ]
-
+"""
+c_list = prepare_z((-0.8, 0.8), (-0.8, 0.8), 60)
 for i, c in enumerate(c_list, start=1):
     print(f"{strftime('%H:%M:%S')}: Calculating {i}. julia set ...")
     start = perf_counter()
-    img_data = calc_julia_nmp(c, zs, max_iter).reshape((y_res, x_res))
+    img_data = calc_julia(c, zs, max_iter).reshape((y_res, x_res))
     end = perf_counter()
     print(f"{strftime('%H:%M:%S')}: ... done (in {end - start:.4f} secs.)")
 
     # Saving one image per color map
+    """
     for j, cmap in enumerate(cmaps, start=1):
-        print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
-        plt.imsave(path / f"julia_{i}-{j}.png", img_data, cmap=cmap)
+        print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.2f})-{j}.png ...")
+        plt.imsave(path / f"julia_({c:.2f})-{j}.png", img_data, cmap=cmap)
+    """
+    print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.3f}).png ...")
+    plt.imsave(path / f"julia_({c:.3f}).png", img_data, cmap="binary")

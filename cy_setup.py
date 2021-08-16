@@ -26,9 +26,9 @@ setup(
 )
 
 """
-The -openmp flags
+The -(f)openmp flags
 - are not recognized and ignored on Windows 10 (same for -fopenmp)
-- disrupt the process on MacOS (not so-output generated)
+- disrupt the process on MacOS (no so-output generated)
 
 Old version:
     Extension(
