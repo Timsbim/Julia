@@ -7,7 +7,8 @@ def calc_julia(
     cdef double complex z
 
     result = [0] * len(zs)
-    for i, z in enumerate(zs):
+    for i in range(len(zs)):
+        z = zs[i]
         n = 0
         while (
             (z.real * z.real + z.imag * z.imag < 4.)
