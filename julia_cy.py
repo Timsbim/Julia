@@ -8,6 +8,7 @@ from matplotlib import pyplot as plt
 
 from cy_julia import calc_julia
 
+
 def set_resolutions(x_interval, y_interval, resolution):
     """Create evenly distributed resolutions:
      - Use given resolution for the larger section
@@ -49,64 +50,37 @@ def prepare_z(x_interval, y_interval, resolution):
     return sum(np.meshgrid(x_axis, 1.j * y_axis)).flatten().tolist()
 
 
-def generate_z(x_interval, y_interval, resolution):
-    """Generate z along a grid:
-     - Rectangle defined by top-left point (x_interval[0], y_interval[1]) and
-       bottom right point (x_interval[1], y_interval[0])
-     - Grid spacing is given by the resolution
-    """
-    x_left, x_right = x_interval
-    y_bottom, y_top = y_interval
-    x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
-    x_axis = np.linspace(x_left, x_right, x_res, endpoint=True)
-    y_axis = np.linspace(y_top, y_bottom, y_res, endpoint=True) * 1.j
+# Image path (create, if it doesn't exist)
+path = Path().cwd() / "Images"
+path.mkdir(exist_ok=True)
 
-    for y, x in product(y_axis, x_axis):
-        yield x + y
+# Some Matplotlib color maps
+cmaps = ["binary", "Blues", "seismic"]
 
+# Relatively good section (not for all) and resolution
+x_interval = (-1.6, 1.6)
+y_interval = (-1., 1.)
+resolution = 1000
+x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
+zs = prepare_z(x_interval, y_interval, resolution)
+max_iter = 500
 
-def julia(c, z):
-    """Obvious ... :))"""
-    n = 0
-    while abs(z) < 2. and n < 300:
-        z = z * z + c
-        n += 1
-    return n
+# List of interesting c constants
+c_list = [
+    -0.62772 - 0.42193j,
+    -0.74543 + 0.11301j,
+    -0.75 + 0.11j,
+    -0.1 + 0.651j,
+    -0.8 + 0.156j
+]
+for i, c in enumerate(c_list, start=1):
+    print(f"{strftime('%H:%M:%S')}: Calculating {i}. julia set ...")
+    img_data = np.array(
+        calc_julia(c, zs, max_iter)
+    ).reshape((y_res, x_res))
+    print(f"{strftime('%H:%M:%S')}: ... done.")
 
-
-if __name__ == '__main__':
-
-    # Image path (create, if it doesn't exist)
-    path = Path().cwd() / "Images"
-    path.mkdir(exist_ok=True)
-
-    # Some Matplotlib color maps
-    cmaps = ["binary", "Blues", "seismic"]
-
-    # Relatively good section (not for all) and resolution
-    x_interval = (-1.6, 1.6)
-    y_interval = (-1., 1.)
-    resolution = 1000
-    x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
-    zs = prepare_z(x_interval, y_interval, resolution)
-    max_iter = 500
-
-    # List of interesting c constants
-    c_list = [
-        -0.62772 - 0.42193j,
-        -0.74543 + 0.11301j,
-        -0.75 + 0.11j,
-        -0.1 + 0.651j,
-        -0.8 + 0.156j
-    ]
-    for i, c in enumerate(c_list, start=1):
-        print(f"{strftime('%H:%M:%S')}: Calculating {i}. julia set ...")
-        img_data = np.array(
-            calc_julia(c, zs, max_iter)
-        ).reshape((y_res, x_res))
-        print(f"{strftime('%H:%M:%S')}: ... done.")
-
-        # Saving one image per color map
-        for j, cmap in enumerate(cmaps, start=1):
-            print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
-            plt.imsave(path / f"julia_{i}-{j}.png", img_data, cmap=cmap)
+    # Saving one image per color map
+    for j, cmap in enumerate(cmaps, start=1):
+        print(f"{strftime('%H:%M:%S')}: Saving julia_{i}-{j}.png ...")
+        plt.imsave(path / f"julia_{i}-{j}.png", img_data, cmap=cmap)
