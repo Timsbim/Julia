@@ -77,7 +77,7 @@ c_list = [
 for i, c in enumerate(c_list, start=1):
     print(f"{strftime('%H:%M:%S')}: Calculating {i}. julia set ...")
     start = perf_counter()
-    img_data = calc_julia(c, zs, max_iter).reshape((y_res, x_res))
+    img_data = calc_julia_nmp(c, zs, max_iter).reshape((y_res, x_res))
     end = perf_counter()
     print(f"{strftime('%H:%M:%S')}: ... done (in {end - start:.4f} secs.)")
 
