@@ -58,8 +58,8 @@ path.mkdir(exist_ok=True)
 cmaps = ["binary", "Blues", "seismic"]
 
 # Relatively good section (not for all) and resolution
-x_interval = (-1.3, 1.3)
-y_interval = (-1.6, 1.6)
+x_interval = (-1.4, 1.4)
+y_interval = (-1.25, 1.25)
 resolution = 1000
 x_res, y_res = set_resolutions(x_interval, y_interval, resolution)
 zs = prepare_z(x_interval, y_interval, resolution)
@@ -79,8 +79,9 @@ c_list = -0.4 + np.linspace(0.583, 0.61, 28, endpoint=True) * 1.j
 c_list = -0.507 - np.linspace(0.513, 0.525, 25, endpoint=True) * 1.j
 c_list = -0.773 + np.linspace(0.105, 0.133, 29, endpoint=True) * 1.j
 c_list = 0.373 - np.linspace(0.132, 0.176, 45, endpoint=True) * 1.j
-"""
 c_list = 0.373 - np.linspace(0.270, 0.290, 20, endpoint=True) * 1.j
+"""
+c_list = -0.100 + np.linspace(0.650, 0.653, 31, endpoint=True) * 1.j
 for i, c in enumerate(c_list, start=1):
     print(f"{strftime('%H:%M:%S')}: Calculating {i}. julia set ...")
     start = perf_counter()
@@ -90,5 +91,5 @@ for i, c in enumerate(c_list, start=1):
 
     # Saving one image per color map
     for j, cmap in enumerate(cmaps, start=1):
-        print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.3f})-{j}.png ...")
-        plt.imsave(path / f"julia_({c:.3f})-{j}.png", img_data, cmap=cmap)
+        print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.4f})-{j}.png ...")
+        plt.imsave(path / f"julia_({c:.4f})-{j}.png", img_data, cmap=cmap)
