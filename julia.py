@@ -43,7 +43,7 @@ def set_resolutions(x_interval, y_interval, resolution):
         if not y_res % 2:
             y_res += 1
     else:
-        x_res = int(resolution / x_to_y_ratio)
+        x_res = int(resolution * x_to_y_ratio)
         if not x_res % 2:
             x_res += 1
         y_res = resolution
