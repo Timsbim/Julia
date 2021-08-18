@@ -51,11 +51,16 @@ def prepare_z(x_interval, y_interval, resolution):
 
 
 # Image path (create, if it doesn't exist)
-path = Path().cwd() / "Images" / "Details"
+path = Path().cwd() / "Images" / "Test"
 path.mkdir(exist_ok=True)
 
 # Some Matplotlib color maps
-cmaps = ["binary", "Blues", "seismic"]
+cmaps = [
+    "binary", "Blues",
+    "seismic", "plasma", "viridis",
+    "Spectral", "coolwarm",
+    "jet"
+]
 
 # Relatively good section (not for all) and resolution
 x_interval = (-1.4, 1.4)
@@ -90,6 +95,6 @@ for i, c in enumerate(c_list, start=1):
     print(f"{strftime('%H:%M:%S')}: ... done (in {end - start:.2f} secs.)")
 
     # Saving one image per color map
-    for j, cmap in enumerate(cmaps, start=1):
+    for j, cmap in enumerate(cmaps[:3], start=1):
         print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.4f})-{j}.png ...")
         plt.imsave(path / f"julia_({c:.4f})-{j}.png", img_data, cmap=cmap)
