@@ -1,7 +1,5 @@
-from itertools import product
 from pathlib import Path
 from time import strftime, perf_counter
-from array import array
 
 import numpy as np
 from matplotlib import pyplot as plt
