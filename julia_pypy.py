@@ -5,15 +5,33 @@ from array import array
 from PIL import Image
 
 
-def pil_show(flat_image, x_res, y_res, file):
+def pil_black_white(flat_image, x_res, y_res, file):
     """Idea from: https://github.com/mynameisfiber/high_performance_python_2e
     """
     scale_factor = float(max(flat_image))
-    output = array(
+    im_data = array(
         'B', (int(value / scale_factor * 255) for value in flat_image)
     )
     img = Image.new("L", (x_res, y_res))
-    img.frombytes(output.tobytes(), "raw", "L", 0, -1)
+    img.frombytes(im_data.tobytes(), "raw", "L", 0, -1)
+    img.save(file)
+
+
+def pil_grey(flat_image, x_res, y_res, file):
+    """Idea from: https://github.com/mynameisfiber/high_performance_python_2e
+    """
+    scale_factor = float(max(flat_image))
+    base_data = (int(value / scale_factor * 255) for value in flat_image)
+    rgb_level_3 = 256 ** 2
+    im_data = array(
+        'I',
+        (
+            (value + (256 * value) + rgb_level_3 * value) * 16
+            for value in base_data
+        )
+    )
+    img = Image.new("RGB", (x_res, y_res))
+    img.frombytes(im_data.tobytes(), "raw", "RGBX", 0, -1)
     img.save(file)
 
 
@@ -100,4 +118,4 @@ if __name__ == '__main__':
         print(f"{strftime('%H:%M:%S')}: ... done (in {end - start:.2f} secs.)")
 
         print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.5f}) ...")
-        pil_show(flat_image, x_res, y_res, file=path / f"julia_{c:.5f}.png")
+        pil_grey(flat_image, x_res, y_res, file=path / f"julia_{c:.5f}.png")
