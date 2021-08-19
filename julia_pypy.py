@@ -1,6 +1,7 @@
 from pathlib import Path
 from time import strftime, perf_counter
 from array import array
+from itertools import product
 
 from PIL import Image
 
@@ -32,6 +33,21 @@ def pil_grey(flat_image, x_res, y_res, file):
     )
     img = Image.new("RGB", (x_res, y_res))
     img.frombytes(im_data.tobytes(), "raw", "RGBX", 0, -1)
+    img.save(file)
+
+
+def pil_test(flat_image, x_res, y_res, file):
+    scale_factor = float(max(flat_image))
+    data = (value / scale_factor for value in flat_image)
+    img = Image.new("RGB", (x_res, y_res))
+    img_data = img.load()
+    for j, i in product(range(y_res - 1, -1, -1), range(x_res)):
+        value = next(data)
+        img_data[i, j] = (
+            255 - int(value * 75),
+            255 - int(value * 200),
+            255 - int(value * 150)
+        )
     img.save(file)
 
 
@@ -118,4 +134,4 @@ if __name__ == '__main__':
         print(f"{strftime('%H:%M:%S')}: ... done (in {end - start:.2f} secs.)")
 
         print(f"{strftime('%H:%M:%S')}: Saving julia_({c:.5f}) ...")
-        pil_grey(flat_image, x_res, y_res, file=path / f"julia_{c:.5f}.png")
+        pil_test(flat_image, x_res, y_res, file=path / f"julia_{c:.5f}.png")
