@@ -36,18 +36,24 @@ def pil_grey(flat_image, x_res, y_res, file):
     img.save(file)
 
 
+def color(value):
+    r_start, g_start, b_start = 50, 100, 75
+    r_end, g_end, b_end = 240, 240, 240
+    return (
+        int((value * r_start + (255 - value) * r_end) / 255),
+        int((value * g_start + (255 - value) * g_end) / 255),
+        int((value * b_start + (255 - value) * b_end) / 255)
+    )
+
+
 def pil_test(flat_image, x_res, y_res, file):
     scale_factor = float(max(flat_image))
-    data = (value / scale_factor for value in flat_image)
+    data = (value / scale_factor * 255 for value in flat_image)
     img = Image.new("RGB", (x_res, y_res))
     img_data = img.load()
     for j, i in product(range(y_res - 1, -1, -1), range(x_res)):
         value = next(data)
-        img_data[i, j] = (
-            255 - int(value * 75),
-            255 - int(value * 200),
-            255 - int(value * 150)
-        )
+        img_data[i, j] = color(value)
     img.save(file)
 
 
