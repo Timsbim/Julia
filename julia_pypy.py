@@ -37,8 +37,8 @@ def pil_grey(flat_image, x_res, y_res, file):
 
 
 def color(value):
-    r_start, g_start, b_start = 50, 100, 75
-    r_end, g_end, b_end = 240, 240, 240
+    r_start, g_start, b_start = 250, 0, 0
+    r_end, g_end, b_end = 0, 0, 250
     return (
         int((value * r_start + (255 - value) * r_end) / 255),
         int((value * g_start + (255 - value) * g_end) / 255),
