@@ -52,8 +52,7 @@ def pil_test(flat_image, x_res, y_res, file):
     img = Image.new("RGB", (x_res, y_res))
     img_data = img.load()
     for j, i in product(range(y_res - 1, -1, -1), range(x_res)):
-        value = next(data)
-        img_data[i, j] = color(value)
+        img_data[i, j] = color(next(data))
     img.save(file)
 
 
